@@ -382,6 +382,7 @@ end
 
 function transponder()
     while true do
+        wait(0)
         delay_start = os.time()
         wait(settings.transponder.delay)
         if getActiveInterior() == 0 then
@@ -459,10 +460,10 @@ function transponder()
                                             end
                                         end
                                     end
-                                    f:close()
-                                    os.remove(response_path)
                                     wait_for_response = false
                                 end
+                                f:close()
+                                os.remove(response_path)
                             end
                         else
                             sampAddChatMessage(
@@ -1030,23 +1031,7 @@ function init()
         dn(i .. ".png")
         dn(i .. "k.png")
     end
-    for i = 1, 24 do
-        for z = 1, 24 do
-            dn(i .. "-" .. z .. ".png")
-        end
-    end
-    for i = 1, 24 do
-        for z = 1, 24 do
-            loadstring(
-                "kv" ..
-                    tostring(i) ..
-                        "_" ..
-                            tostring(z) ..
-                                " = renderLoadTextureFromFile(getGameDirectory()..'/moonloader/resource/locator/" ..
-                                    tostring(i) .. "-" .. tostring(z) .. ".png')"
-            )()
-        end
-    end
+
     player = renderLoadTextureFromFile(getGameDirectory() .. "/moonloader/resource/locator/pla.png")
     matavoz = renderLoadTextureFromFile(getGameDirectory() .. "/moonloader/resource/locator/matavoz.png")
     font = renderCreateFont("Impact", 8, 4)
