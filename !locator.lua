@@ -1139,7 +1139,7 @@ function fastmap()
                 renderDrawTexture(m14, bX + size / 4, bY + 3 * (size / 4), size / 4, size / 4, 0, 0xFFFFFFFF)
                 renderDrawTexture(m15, bX + 2 * (size / 4), bY + 3 * (size / 4), size / 4, size / 4, 0, 0xFFFFFFFF)
                 renderDrawTexture(m16, bX + 3 * (size / 4), bY + 3 * (size / 4), size / 4, size / 4, 0, 0xFFFFFFFF)
-                renderDrawBoxWithBorder(bX, bY + size - size / 42, size, size / 50, -1, 2, -2)
+                renderDrawBoxWithBorder(bX, bY + size - size / 42, size, size / 45, -1, 2, -2)
 
                 renderFontDrawText(
                     font10,
