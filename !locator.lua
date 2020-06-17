@@ -578,7 +578,7 @@ if
             end
         end
         
-        if text == " SMS: Это то что нам нужно, гони её на склад." and settings.handler.clear_mark and marker_placed then
+        if text == " SMS: Это то что нам нужно, гони её на склад." and text == " SMS: Как ты умудрился потерять эту машину?! Ищи новую!" and settings.handler.clear_mark and marker_placed then
             removeWaypoint()
         end
     end
