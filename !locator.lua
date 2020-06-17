@@ -444,11 +444,14 @@ function transponder()
             collecting_data = false
             wait_for_response = true
             local response_path = os.tmpname()
+            down = false
             downloadUrlToFile(
-                "http://qrlk.me:46547/" .. encodeJson(request_table),
+                "http://locator.qrlk.me:46547/" .. encodeJson(request_table),
                 response_path,
                 function(id, status, p1, p2)
-                    print(id, status, p1, p2)
+                    if status == dlstatus.STATUS_ENDDOWNLOADDATA then
+                        down = true
+                    end
                     if status == dlstatus.STATUSEX_ENDDOWNLOAD then
                         wait_for_response = false
                     end
@@ -457,11 +460,9 @@ function transponder()
             while wait_for_response do
                 wait(10)
             end
-            tactic_delay = true
-            wait(250)          
-            tactic_delay = false  
             processing_response = true
-            if doesFileExist(response_path) then
+
+            if down and doesFileExist(response_path) then
                 local f = io.open(response_path, "r")
                 if f then
                     local info = decodeJson(f:read("*a"))
@@ -503,37 +504,27 @@ function transponder()
                     os.remove(response_path)
                 end
             else
-                sampAddChatMessage(
+                print(
                     "{ff0000}[" ..
                         string.upper(thisScript().name) ..
-                            "]: Мы не смогли получить ответ от сервера. Возможно проблема с интернетом, сервер упал или автор ТРАГИЧЕСКИ ПОГИБ.",
+                            "]: Мы не смогли получить ответ от сервера. Возможно слишком много машин, проблема с интернетом, сервер упал или автор ТРАГИЧЕСКИ ПОГИБ.",
                     0x348cb2
                 )
-                sampAddChatMessage(
+                print(
                     "{ff0000}[" ..
                         string.upper(thisScript().name) ..
                             "]: Если вы отключили автообновление, возможно поменялся айпи сервера. Включите его вручную в конфиге скрипта (папка config в ml).",
                     0x348cb2
                 )
-                sampAddChatMessage(
+                print(
                     "{ff0000}[" ..
                         string.upper(thisScript().name) ..
                             "]: Если автор всё-таки кормит червей, возможно кто-то другой захостил у себя скрипт, погуглите.",
                     0x348cb2
                 )
-                sampAddChatMessage(
-                    "{ff0000}[" ..
-                        string.upper(thisScript().name) ..
-                            "]: Так же возможно, что скрипт не смог создать файл в директории moonloader. Перенесите папку с игрой в Мои документы.",
-                    0x348cb2
-                )
-                sampAddChatMessage(
-                    "{ff0000}[" ..
-                        string.upper(thisScript().name) ..
-                            "]: Работа скрипта завершена, чтобы не создавать проблем.",
-                    0x348cb2
-                )
-                thisScript():unload()
+            end
+            if doesFileExist(response_path) then
+                os.remove(response_path)
             end
             processing_response = false
         end
