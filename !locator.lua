@@ -441,93 +441,101 @@ function transponder()
                     end
                 end
             end
-
+            collecting_data = false
             wait_for_response = true
-            local response_path = getWorkingDirectory() .. "\\!locator.json"
+            local response_path = os.tmpname()
             downloadUrlToFile(
                 "http://qrlk.me:46547/" .. encodeJson(request_table),
                 response_path,
                 function(id, status, p1, p2)
+                    print(id, status, p1, p2)
                     if status == dlstatus.STATUSEX_ENDDOWNLOAD then
-                        if doesFileExist(response_path) then
-                            local f = io.open(response_path, "r")
-                            if f then
-                                local info = decodeJson(f:read("*a"))
-                                if info == nil then
-                                    sampAddChatMessage(
-                                        "{ff0000}[" ..
-                                            string.upper(thisScript().name) ..
-                                                "]: Был получен некорректный ответ от сервера. Работа скрипта завершена.",
-                                        0x348cb2
-                                    )
-                                    thisScript():unload()
-                                else
-                                    if info.result == "ok" then
-                                        response_timestamp = info.timestamp
-                                        ser_active = info.active
-                                        ser_count = info.count
-                                        if info.response ~= nil then
-                                            if info.response == "no cars" then
-                                                vhinfo = {}
-                                                if settings.handler.clear_mark and marker_placed then
-                                                    removeWaypoint()
-                                                end
-                                            else
-                                                vhinfo = info.response
-                                                if settings.handler.mark_coolest then
-                                                    mark_coolest_car()
-                                                end
-                                            end
-                                        else
-                                            if settings.handler.clear_mark and marker_placed then
-                                                removeWaypoint()
-                                            end
-                                        end
-                                    end
-                                    wait_for_response = false
-                                end
-                                f:close()
-                                os.remove(response_path)
-                            end
-                        else
-                            sampAddChatMessage(
-                                "{ff0000}[" ..
-                                    string.upper(thisScript().name) ..
-                                        "]: Мы не смогли получить ответ от сервера. Возможно проблема с интернетом, сервер упал или автор ТРАГИЧЕСКИ ПОГИБ.",
-                                0x348cb2
-                            )
-                            sampAddChatMessage(
-                                "{ff0000}[" ..
-                                    string.upper(thisScript().name) ..
-                                        "]: Если вы отключили автообновление, возможно поменялся айпи сервера. Включите его вручную в конфиге скрипта (папка config в ml).",
-                                0x348cb2
-                            )
-                            sampAddChatMessage(
-                                "{ff0000}[" ..
-                                    string.upper(thisScript().name) ..
-                                        "]: Если автор всё-таки кормит червей, возможно кто-то другой захостил у себя скрипт, погуглите.",
-                                0x348cb2
-                            )
-                            sampAddChatMessage(
-                                "{ff0000}[" ..
-                                    string.upper(thisScript().name) ..
-                                        "]: Так же возможно, что скрипт не смог создать файл в директории moonloader. Перенесите папку с игрой в Мои документы.",
-                                0x348cb2
-                            )
-                            sampAddChatMessage(
-                                "{ff0000}[" ..
-                                    string.upper(thisScript().name) ..
-                                        "]: Работа скрипта завершена, чтобы не создавать проблем.",
-                                0x348cb2
-                            )
-                            thisScript():unload()
-                        end
+                        wait_for_response = false
                     end
                 end
             )
             while wait_for_response do
-                wait(100)
+                wait(10)
             end
+            tactic_delay = true
+            wait(250)          
+            tactic_delay = false  
+            processing_response = true
+            if doesFileExist(response_path) then
+                local f = io.open(response_path, "r")
+                if f then
+                    local info = decodeJson(f:read("*a"))
+                    if info == nil then
+                        sampAddChatMessage(
+                            "{ff0000}[" ..
+                                string.upper(thisScript().name) ..
+                                    "]: Был получен некорректный ответ от сервера. Работа скрипта завершена.",
+                            0x348cb2
+                        )
+                        thisScript():unload()
+                    else
+                        if info.result == "ok" then
+                            response_timestamp = info.timestamp
+                            ser_active = info.active
+                            ser_count = info.count
+                            if info.response ~= nil then
+                                if info.response == "no cars" then
+                                    vhinfo = {}
+                                    if settings.handler.clear_mark and marker_placed then
+                                        removeWaypoint()
+                                    end
+                                else
+                                    vhinfo = info.response
+                                    if settings.handler.mark_coolest then
+                                        mark_coolest_car()
+                                    end
+                                end
+                            else
+                                if settings.handler.clear_mark and marker_placed then
+                                    removeWaypoint()
+                                end
+                            end
+                        end
+                        wait_for_response = false
+                    end
+                    f:close()
+                    --setClipboardText(response_path)
+                    os.remove(response_path)
+                end
+            else
+                sampAddChatMessage(
+                    "{ff0000}[" ..
+                        string.upper(thisScript().name) ..
+                            "]: Мы не смогли получить ответ от сервера. Возможно проблема с интернетом, сервер упал или автор ТРАГИЧЕСКИ ПОГИБ.",
+                    0x348cb2
+                )
+                sampAddChatMessage(
+                    "{ff0000}[" ..
+                        string.upper(thisScript().name) ..
+                            "]: Если вы отключили автообновление, возможно поменялся айпи сервера. Включите его вручную в конфиге скрипта (папка config в ml).",
+                    0x348cb2
+                )
+                sampAddChatMessage(
+                    "{ff0000}[" ..
+                        string.upper(thisScript().name) ..
+                            "]: Если автор всё-таки кормит червей, возможно кто-то другой захостил у себя скрипт, погуглите.",
+                    0x348cb2
+                )
+                sampAddChatMessage(
+                    "{ff0000}[" ..
+                        string.upper(thisScript().name) ..
+                            "]: Так же возможно, что скрипт не смог создать файл в директории moonloader. Перенесите папку с игрой в Мои документы.",
+                    0x348cb2
+                )
+                sampAddChatMessage(
+                    "{ff0000}[" ..
+                        string.upper(thisScript().name) ..
+                            "]: Работа скрипта завершена, чтобы не создавать проблем.",
+                    0x348cb2
+                )
+                thisScript():unload()
+            end
+            processing_response = false
         end
     end
 end
@@ -539,8 +547,12 @@ function count_next()
             return tostring(count) .. "c"
         elseif wait_for_response then
             return "WAITING FOR RESPONSE"
-        else
-            return "COLLECTING DATA"
+        elseif tactic_delay then
+            return "TACTICAL DELAY"
+        elseif processing_response then
+            return "PROCESSING RESPONSE"
+        else 
+            return "PERFOMING REQUEST"
         end
     else
         return "выйди из инт"
