@@ -650,6 +650,31 @@ function updateMenu()
                     end
                 },
                 {
+                    title = " "
+                },
+                {
+                    title = "{AAAAAA}Настройки захвата чата"
+                },
+                {
+                    title = color_sampev.."[SRP | SAMP.Lua]: Ловить начало угона и автоматом запрашивать машину: " ..
+                        tostring(settings.transponder.catch_srp_start),
+                    onclick = function()
+                        settings.transponder.catch_srp_start = not settings.transponder.catch_srp_start
+                        inicfg.save(settings, "locator")
+                    end
+                },
+                {
+                    title = color_sampev.."[SRP | SAMP.Lua]: Ловить конец угона и автоматом отменять запрос: " ..
+                        tostring(settings.transponder.catch_srp_stop),
+                    onclick = function()
+                        settings.transponder.catch_srp_stop = not settings.transponder.catch_srp_stop
+                        inicfg.save(settings, "locator")
+                    end
+                },
+                {
+                    title = " "
+                },
+                {
                     title = "{AAAAAA}Настройки запроса"
                 },
                 {
@@ -664,6 +689,34 @@ function updateMenu()
                         tostring(settings.transponder.allow_unlocked),
                     onclick = function()
                         settings.transponder.allow_unlocked = not settings.transponder.allow_unlocked
+                        inicfg.save(settings, "locator")
+                    end
+                },
+                {
+                    title = " "
+                },
+                {
+                    title = "{AAAAAA}Настройки обработки ответа"
+                },
+                {
+                    title = "Отмечать маркером самую лучший вариант для угона: " .. tostring(settings.handler.mark_coolest),
+                    onclick = function()
+                        settings.handler.mark_coolest = not settings.handler.mark_coolest
+                        inicfg.save(settings, "locator")
+                    end
+                },
+                {
+                    title = "Отмечать звуком, когда маркер ставится по новым координатам: " ..
+                        tostring(settings.handler.mark_coolest_sound),
+                    onclick = function()
+                        settings.handler.mark_coolest_sound = not settings.handler.mark_coolest_sound
+                        inicfg.save(settings, "locator")
+                    end
+                },
+                {
+                    title = "Убирать поставленный скриптом маркер когда это необходимо: " .. tostring(settings.handler.clear_mark),
+                    onclick = function()
+                        settings.handler.clear_mark = not settings.handler.clear_mark
                         inicfg.save(settings, "locator")
                     end
                 }
