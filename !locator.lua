@@ -9,6 +9,7 @@ local dlstatus = require("moonloader").download_status
 select_car_dialog = {}
 vhinfo = {}
 request_model = -1
+marker_placed = false
 response_timestamp = 0
 ser_active = "?"
 ser_count = "?"
@@ -27,13 +28,20 @@ settings =
         },
         transponder = {
             allow_occupied = true,
-            allow_unlocked = true,
+            allow_unlocked = false,
+            catch_srp_start = true,
+            catch_srp_stop = true,
             delay = 5999
+        },
+        handler = {
+            mark_coolest = true,
+            mark_coolest_sound = true,
+            clear_mark = true
         }
     },
     "locator"
 )
-
+no_sampev = false
 function main()
     if not isSampfuncsLoaded() or not isSampLoaded() then
         return
@@ -65,6 +73,12 @@ function main()
                     " активирован! {7ef3fa}/locator - menu {348cb2}~~{7ef3fa} /locatedonate - задонатить на сервер. {348cb2}Автор: qrlk.me",
             0x7ef3fa
         )
+        if no_sampev then
+            sampAddChatMessage(
+                "Модуль SAMP.Lua не был загружен. Захват чата отключён. {348cb2}Подробнее: https://www.blast.hk/threads/14624/",
+                0xff0000
+            )
+        end
     end
 
     while true do
@@ -455,8 +469,18 @@ function transponder()
                                         if info.response ~= nil then
                                             if info.response == "no cars" then
                                                 vhinfo = {}
+                                                if settings.handler.clear_mark and marker_placed then
+                                                    removeWaypoint()
+                                                end
                                             else
                                                 vhinfo = info.response
+                                                if settings.handler.mark_coolest then
+                                                    mark_coolest_car()
+                                                end
+                                            end
+                                        else
+                                            if settings.handler.clear_mark and marker_placed then
+                                                removeWaypoint()
                                             end
                                         end
                                     end
@@ -521,6 +545,46 @@ function count_next()
     else
         return "выйди из инт"
     end
+end
+if
+    pcall(
+        function()
+            sampev = require "lib.samp.events"
+            color_sampev = ""
+        end
+    )
+ then
+    function sampev.onServerMessage(color, text)
+        local car_to_steal = string.match(text, " Пригони нам тачку марки (.+), и мы тебе хорошо заплатим.")
+
+        if settings.transponder.catch_srp_start and car_to_steal then
+            if cars[string.lower(car_to_steal)] ~= nil then
+                request_model = cars[string.lower(car_to_steal)]
+                addOneOffSound(0.0, 0.0, 0.0, 1139)
+            else
+                request_model = -1
+                addOneOffSound(0.0, 0.0, 0.0, 1057)
+            end
+        end
+
+        if settings.transponder.catch_srp_stop then
+            if
+                text == " SMS: Ты меня огорчил!" or
+                    text == " SMS: Слишком долго. Нам нужны хорошие автоугонщики, а не черепахи" or 
+                     text == " Отличная тачка. Будет нужна работа, приходи."
+             then
+                request_model = -1
+                addOneOffSound(0.0, 0.0, 0.0, 1057)
+            end
+        end
+        
+        if text == " SMS: Это то что нам нужно, гони её на склад." and settings.handler.clear_mark and marker_placed then
+            removeWaypoint()
+        end
+    end
+else
+    color_sampev = "{FF0000}"
+    no_sampev = true
 end
 --------------------------------------------------------------------------------
 -------------------------------------MENU---------------------------------------
@@ -656,6 +720,7 @@ function legacy_edith_front()
             if not first then
                 str = str .. "{7ef3fa}"
                 placeWaypoint(v["pos"]["x"], v["pos"]["y"], v["pos"]["z"])
+                marker_placed = true
             end
             str =
                 str ..
@@ -696,6 +761,7 @@ function legacy_edith_front()
             if not first then
                 str = str .. "{7ef3fa}"
                 placeWaypoint(v["pos"]["x"], v["pos"]["y"], v["pos"]["z"])
+                marker_placed = true
             end
             str =
                 str ..
@@ -733,6 +799,54 @@ function legacy_edith_front()
         str = str .. "\n\n{e5ff00}Выделенная машина отмечена на карте меткой (waypoint).{ffffff}"
     end
     sampShowDialog(9123, "LOCATOR: отчёт о поиске " .. tostring(carsids[request_model]), str, "Ясно")
+end
+
+marker_last_x = 0
+marker_last_y = 0
+
+function mark_coolest_car()
+    local x, y = getCharCoordinates(playerPed)
+    local first = false
+    table.sort(vhinfo, sort)
+    for k, v in pairs(vhinfo) do
+        if v["occupied"] == false then
+            if not first then
+                placeWaypoint(v["pos"]["x"], v["pos"]["y"], v["pos"]["z"])
+                marker_placed = true
+                if v["pos"]["x"] ~= marker_last_x or v["pos"]["y"] ~= marker_last_y then
+                    if settings.handler.mark_coolest_sound then
+                        addOneOffSound(0.0, 0.0, 0.0, 1139)
+                    end
+                end
+                marker_last_x = v["pos"]["x"]
+                marker_last_y = v["pos"]["y"]
+            end
+
+            if not first then
+                first = true
+            end
+        end
+    end
+
+    for k, v in pairs(vhinfo) do
+        if v["occupied"] == true then
+            if not first then
+                placeWaypoint(v["pos"]["x"], v["pos"]["y"], v["pos"]["z"])
+                marker_placed = true
+                if v["pos"]["x"] ~= marker_last_x or v["pos"]["y"] ~= marker_last_y then
+                    if settings.handler.mark_coolest_sound then
+                        addOneOffSound(0.0, 0.0, 0.0, 1139)
+                    end
+                end
+                marker_last_x = v["pos"]["x"]
+                marker_last_y = v["pos"]["y"]
+            end
+
+            if not first then
+                first = true
+            end
+        end
+    end
 end
 
 function toanime(bool)
