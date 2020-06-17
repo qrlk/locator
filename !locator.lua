@@ -673,7 +673,7 @@ function updateMenu()
             title = " "
         },
         {
-            title = "{AAAAAA}Донатddd"
+            title = "{AAAAAA}Донат"
         },
         {
             title = "Донат на сервер",
