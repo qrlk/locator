@@ -1,6 +1,6 @@
 script_name("locator")
 script_author("qrlk")
-script_version("17.06.2020")
+script_version("18.06.2020")
 script_description("Локатор машин для угонщиков")
 
 local inicfg = require "inicfg"
