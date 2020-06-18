@@ -32,6 +32,7 @@ settings =
             allow_unlocked = false,
             catch_srp_start = true,
             catch_srp_stop = true,
+            catch_srp_gz = true,
             delay = 5999
         },
         handler = {
@@ -534,7 +535,7 @@ end
 
 function count_next()
     if getActiveInterior() == 0 then
-        local count = math.floor(settings.transponder.delay/1000) - tonumber(os.time() - delay_start)
+        local count = math.floor(settings.transponder.delay / 1000) - tonumber(os.time() - delay_start)
         if count >= 0 then
             return tostring(count) .. "c"
         elseif wait_for_response then
@@ -548,6 +549,11 @@ function count_next()
         return "выйди из инт"
     end
 end
+
+gz_squareStart = {}
+gz_squareEnd = {}
+gz_id = -1
+
 if
     pcall(
         function()
@@ -556,6 +562,22 @@ if
         end
     )
  then
+    function sampev.onCreateGangZone(zoneId, squareStart, squareEnd, color)
+        if color == -1442840576 then
+            gz_id = zoneId
+            gz_squareStart = squareStart
+            gz_squareEnd = squareEnd
+        end
+    end
+
+    function sampev.onGangZoneDestroy(zoneId)
+        if gz_id == zoneId then
+            gz_squareStart = {}
+            gz_squareEnd = {}
+            gz_id = -1
+        end
+    end
+
     function sampev.onServerMessage(color, text)
         local car_to_steal = string.match(text, " Пригони нам тачку марки (.+), и мы тебе хорошо заплатим.")
 
@@ -666,7 +688,7 @@ function updateMenu()
                     title = " "
                 },
                 {
-                    title = "{AAAAAA}Настройки захвата чата"
+                    title = "{AAAAAA}Настройки интеграций с проектами"
                 },
                 {
                     title = color_sampev ..
@@ -683,6 +705,15 @@ function updateMenu()
                             tostring(settings.transponder.catch_srp_stop),
                     onclick = function()
                         settings.transponder.catch_srp_stop = not settings.transponder.catch_srp_stop
+                        inicfg.save(settings, "locator")
+                    end
+                },
+                {
+                    title = color_sampev ..
+                        "[SRP | SAMP.Lua]: Ловить черный квадрат где 'наши парни видели': " ..
+                            tostring(settings.transponder.catch_srp_gz),
+                    onclick = function()
+                        settings.transponder.catch_srp_gz = not settings.transponder.catch_srp_gz
                         inicfg.save(settings, "locator")
                     end
                 },
@@ -708,7 +739,7 @@ function updateMenu()
                     end
                 },
                 {
-                    title = "Задержка между запросами: "..tostring(settings.transponder.delay).." мс",
+                    title = "Задержка между запросами: " .. tostring(settings.transponder.delay) .. " мс",
                     submenu = {
                         {
                             title = "999 мс",
@@ -1556,9 +1587,20 @@ function fastmap()
             if getQ(x, y, mapmode) or mapmode == 0 then
                 renderDrawTexture(player, getX(x), getY(y), iconsize, iconsize, -getCharHeading(playerPed), -1)
             end
+            if settings.transponder.catch_srp_gz and (getQ(gz_squareStart["x"], gz_squareEnd["y"], mapmode) or mapmode == 0) then
+                if gz_squareStart["x"] ~= nil and gz_squareEnd["y"] ~= nil then
+                    renderDrawBox(
+                        getX(gz_squareStart["x"]) + iconsize / 2,
+                        getY(gz_squareEnd["y"]) + iconsize / 2,
+                        getX(gz_squareEnd["x"]) - getX(gz_squareStart["x"]),
+                        getY(gz_squareStart["y"]) - getY(gz_squareEnd["y"]),
+                        0x80FFFFFF
+                    )
+                end
+            end
+
             for z, v1 in pairs(vhinfo) do
                 if getQ(v1["pos"]["x"], v1["pos"]["y"], mapmode) or mapmode == 0 then
-
                     if v1["locked"] == 2 then
                         color = 0xFF00FF00
                     else
