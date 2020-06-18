@@ -9,6 +9,7 @@ local dlstatus = require("moonloader").download_status
 select_car_dialog = {}
 vhinfo = {}
 request_model = -1
+request_model_last = -1
 marker_placed = false
 response_timestamp = 0
 ser_active = "?"
@@ -571,22 +572,33 @@ if
         if settings.transponder.catch_srp_stop then
             if
                 text == " SMS: Ты меня огорчил!" or
-                    text == " SMS: Слишком долго. Нам нужны хорошие автоугонщики, а не черепахи" or 
-                     text == " Отличная тачка. Будет нужна работа, приходи."
+                    text == " SMS: Слишком долго. Нам нужны хорошие автоугонщики, а не черепахи" or
+                    text == " Отличная тачка. Будет нужна работа, приходи."
              then
                 request_model = -1
                 addOneOffSound(0.0, 0.0, 0.0, 1057)
             end
         end
-        
-        if text == " SMS: Это то что нам нужно, гони её на склад." and text == " SMS: Как ты умудрился потерять эту машину?! Ищи новую!" and settings.handler.clear_mark and marker_placed then
-            removeWaypoint()
+
+        if text == " SMS: Это то что нам нужно, гони её на склад." then
+            request_model_last = request_model
+            request_model = -1
+            if settings.handler.clear_mark and marker_placed then
+                removeWaypoint()
+            end
+        end
+
+        if text == " SMS: Как ты умудрился потерять эту машину?! Ищи новую!" then
+            if request_model == -1 then
+                request_model = request_model_last
+            end
         end
     end
 else
     color_sampev = "{FF0000}"
     no_sampev = true
 end
+
 --------------------------------------------------------------------------------
 -------------------------------------MENU---------------------------------------
 --------------------------------------------------------------------------------
