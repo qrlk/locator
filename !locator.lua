@@ -533,16 +533,14 @@ end
 
 function count_next()
     if getActiveInterior() == 0 then
-        local count = 5 - tonumber(os.time() - delay_start)
+        local count = math.floor(settings.transponder.delay/1000) - tonumber(os.time() - delay_start)
         if count >= 0 then
             return tostring(count) .. "c"
         elseif wait_for_response then
             return "WAITING FOR RESPONSE"
-        elseif tactic_delay then
-            return "TACTICAL DELAY"
         elseif processing_response then
             return "PROCESSING RESPONSE"
-        else 
+        else
             return "PERFOMING REQUEST"
         end
     else
