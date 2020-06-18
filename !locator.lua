@@ -600,7 +600,7 @@ function updateMenu()
                 sampShowDialog(
                     0,
                     "{7ef3fa}/locator v." .. thisScript().version .. " - информация",
-                    "{00ff66}Locator{ffffff}\n{ffffff}На многих РП серверах есть гринд миссии по угону машин на юга.\n\nЦель скрипта: построить сообщество угонщиков и упростить поиск машин.\n\nЮзеры скрипта передают на сервер инфу о всех машинах (кроме той в которой сидят).\nКогда вам это нужно, вы сможете запрашивать координаты нужной вам машины.\nЧем больше людей пользуются скриптом, тем он больше его польза.\n\nИспользования скрипта бесплатно, код открыт, сервер оплачивается донатами.\n\nРезультат можно увидеть в диалоговом окне, можно поставить метку на самый подходящий вариант.\n\nТак же наглядно увидеть на fastmap: L-ALT + Ь(M), а так же на zoommap L-ALT + Б(,).\nНа первой внизу есть статусбар, а на второй стрелками можно перемещаться по карте.\nНа второй можно изменить режим на квадраты, нажав K (когда активен tzoommap).\n\nОбязательно загляните в настройки, там много чего полезного.\n\n{ffcc00}Доступные команды:\n{00ccff}/locator{ffffff} - меню скрипта.\n{00ccff}/locate [название] {ffffff}- выбор цели. Без [название] = сброс.\n{00ccff}/locatelist {ffffff}- диалог выбора машины.\n{00ccff}/ugon {ffffff}- отчёт о поиске, ставит метку на самый подходящий вариант.",
+                    "{00ff66}Locator{ffffff}\n{ffffff}На многих РП серверах есть гринд миссии по угону машин на юга.\n\nЦель скрипта: построить сообщество угонщиков и упростить поиск машин.\n\nЮзеры скрипта передают на сервер инфу о всех машинах (кроме той в которой сидят).\nКогда вам это нужно, вы сможете запрашивать координаты нужной вам машины.\nЧем больше людей пользуются скриптом, тем он больше его польза.\n\nИспользования скрипта бесплатно, код открыт, сервер оплачивается донатами.\n\nРезультат можно увидеть в диалоговом окне, можно поставить метку на самый подходящий вариант.\n\nТак же наглядно увидеть на fastmap: L-ALT + Ь(M), а так же на zoommap L-ALT + Б(,).\nНа первой внизу есть статусбар, а на второй стрелками можно перемещаться по карте.\nНа второй можно изменить режим на квадраты, нажав K (когда активен zoommap).\nЗеленый цвет - закрытая машина, серый - открытая, красный - занятая.\n\nОбязательно загляните в настройки, там много чего полезного.\n\n{ffcc00}Доступные команды:\n{00ccff}/locator{ffffff} - меню скрипта.\n{00ccff}/locate [название] {ffffff}- выбор цели. Без [название] = сброс.\n{00ccff}/locatelist {ffffff}- диалог выбора машины.\n{00ccff}/ugon {ffffff}- отчёт о поиске, ставит метку на самый подходящий вариант.",
                     "Окей"
                 )
             end
@@ -639,7 +639,7 @@ function updateMenu()
                     title = "{AAAAAA}Настройки скрипта"
                 },
                 {
-                    title = "Вкл/выкл автообновление: " .. tostring(settings.locator.enable),
+                    title = "Вкл/выкл автообновление: " .. tostring(settings.locator.autoupdate),
                     onclick = function()
                         settings.locator.autoupdate = not settings.locator.autoupdate
                         inicfg.save(settings, "locator")
@@ -659,16 +659,18 @@ function updateMenu()
                     title = "{AAAAAA}Настройки захвата чата"
                 },
                 {
-                    title = color_sampev.."[SRP | SAMP.Lua]: Ловить начало угона и автоматом запрашивать машину: " ..
-                        tostring(settings.transponder.catch_srp_start),
+                    title = color_sampev ..
+                        "[SRP | SAMP.Lua]: Ловить начало угона и автоматом запрашивать машину: " ..
+                            tostring(settings.transponder.catch_srp_start),
                     onclick = function()
                         settings.transponder.catch_srp_start = not settings.transponder.catch_srp_start
                         inicfg.save(settings, "locator")
                     end
                 },
                 {
-                    title = color_sampev.."[SRP | SAMP.Lua]: Ловить конец угона и автоматом отменять запрос: " ..
-                        tostring(settings.transponder.catch_srp_stop),
+                    title = color_sampev ..
+                        "[SRP | SAMP.Lua]: Ловить конец угона и автоматом отменять запрос: " ..
+                            tostring(settings.transponder.catch_srp_stop),
                     onclick = function()
                         settings.transponder.catch_srp_stop = not settings.transponder.catch_srp_stop
                         inicfg.save(settings, "locator")
@@ -696,13 +698,89 @@ function updateMenu()
                     end
                 },
                 {
+                    title = "Задержка между запросами: "..tostring(settings.transponder.delay).." мс",
+                    submenu = {
+                        {
+                            title = "999 мс",
+                            onclick = function()
+                                settings.transponder.delay = 999
+                                inicfg.save(settings, "locator")
+                            end
+                        },
+                        {
+                            title = "1999 мс",
+                            onclick = function()
+                                settings.transponder.delay = 1999
+                                inicfg.save(settings, "locator")
+                            end
+                        },
+                        {
+                            title = "2999 мс",
+                            onclick = function()
+                                settings.transponder.delay = 2999
+                                inicfg.save(settings, "locator")
+                            end
+                        },
+                        {
+                            title = "3999 мс",
+                            onclick = function()
+                                settings.transponder.delay = 3999
+                                inicfg.save(settings, "locator")
+                            end
+                        },
+                        {
+                            title = "4999 мс",
+                            onclick = function()
+                                settings.transponder.delay = 4999
+                                inicfg.save(settings, "locator")
+                            end
+                        },
+                        {
+                            title = "5999 мс",
+                            onclick = function()
+                                settings.transponder.delay = 5999
+                                inicfg.save(settings, "locator")
+                            end
+                        },
+                        {
+                            title = "6999 мс",
+                            onclick = function()
+                                settings.transponder.delay = 6999
+                                inicfg.save(settings, "locator")
+                            end
+                        },
+                        {
+                            title = "7999 мс",
+                            onclick = function()
+                                settings.transponder.delay = 7999
+                                inicfg.save(settings, "locator")
+                            end
+                        },
+                        {
+                            title = "8999 мс",
+                            onclick = function()
+                                settings.transponder.delay = 8999
+                                inicfg.save(settings, "locator")
+                            end
+                        },
+                        {
+                            title = "9999 мс",
+                            onclick = function()
+                                settings.transponder.delay = 9999
+                                inicfg.save(settings, "locator")
+                            end
+                        }
+                    }
+                },
+                {
                     title = " "
                 },
                 {
                     title = "{AAAAAA}Настройки обработки ответа"
                 },
                 {
-                    title = "Отмечать маркером самую лучший вариант для угона: " .. tostring(settings.handler.mark_coolest),
+                    title = "Отмечать маркером самую лучший вариант для угона: " ..
+                        tostring(settings.handler.mark_coolest),
                     onclick = function()
                         settings.handler.mark_coolest = not settings.handler.mark_coolest
                         inicfg.save(settings, "locator")
@@ -717,7 +795,8 @@ function updateMenu()
                     end
                 },
                 {
-                    title = "Убирать поставленный скриптом маркер когда это необходимо: " .. tostring(settings.handler.clear_mark),
+                    title = "Убирать поставленный скриптом маркер когда это необходимо: " ..
+                        tostring(settings.handler.clear_mark),
                     onclick = function()
                         settings.handler.clear_mark = not settings.handler.clear_mark
                         inicfg.save(settings, "locator")
