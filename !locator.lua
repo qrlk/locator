@@ -1469,10 +1469,15 @@ function fastmap()
             end
             for z, v1 in pairs(vhinfo) do
                 if getQ(v1["pos"]["x"], v1["pos"]["y"], mapmode) or mapmode == 0 then
-                    if v1["locked"] then
-                        color = 0xFFdedbd2
-                    else
+
+                    if v1["locked"] == 2 then
                         color = 0xFF00FF00
+                    else
+                        color = 0xFFdedbd2
+                    end
+
+                    if v1["occupied"] then
+                        color = 0xFFFF0000
                     end
 
                     if response_timestamp - v1["timestamp"] > 2 then
