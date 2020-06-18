@@ -1391,7 +1391,6 @@ function fastmap()
             elseif isKeyDown(188) or mapmode ~= 0 then
                 mapmode = getMode(modX, modY)
                 if wasKeyPressed(0x25) then
-                    print(11)
                     if modY > 1 then
                         modY = modY - 1
                     end
