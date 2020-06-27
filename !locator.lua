@@ -1,6 +1,6 @@
 script_name("locator")
 script_author("qrlk")
-script_version("18.06.2020-2")
+script_version("27.06.2020")
 script_description("Локатор машин для угонщиков")
 
 local inicfg = require "inicfg"
@@ -1586,16 +1586,17 @@ function fastmap()
             if getQ(x, y, mapmode) or mapmode == 0 then
                 renderDrawTexture(player, getX(x), getY(y), iconsize, iconsize, -getCharHeading(playerPed), -1)
             end
-            if settings.transponder.catch_srp_gz and (getQ(gz_squareStart["x"], gz_squareEnd["y"], mapmode) or mapmode == 0) then
-                if gz_squareStart["x"] ~= nil and gz_squareEnd["y"] ~= nil then
-                    renderDrawBox(
-                        getX(gz_squareStart["x"]) + iconsize / 2,
-                        getY(gz_squareEnd["y"]) + iconsize / 2,
-                        getX(gz_squareEnd["x"]) - getX(gz_squareStart["x"]),
-                        getY(gz_squareStart["y"]) - getY(gz_squareEnd["y"]),
-                        0x80FFFFFF
-                    )
-                end
+            if
+                settings.transponder.catch_srp_gz and gz_squareStart["x"] ~= nil and gz_squareEnd["y"] ~= nil and
+                    (getQ(gz_squareStart["x"], gz_squareEnd["y"], mapmode) or mapmode == 0)
+             then
+                renderDrawBox(
+                    getX(gz_squareStart["x"]) + iconsize / 2,
+                    getY(gz_squareEnd["y"]) + iconsize / 2,
+                    getX(gz_squareEnd["x"]) - getX(gz_squareStart["x"]),
+                    getY(gz_squareStart["y"]) - getY(gz_squareEnd["y"]),
+                    0x80FFFFFF
+                )
             end
 
             for z, v1 in pairs(vhinfo) do
