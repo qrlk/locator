@@ -1,6 +1,6 @@
 script_name("locator")
 script_author("qrlk")
-script_version("27.06.2020")
+script_version("10.07.2020")
 script_description("Локатор машин для угонщиков")
 
 local inicfg = require "inicfg"
@@ -13,6 +13,7 @@ request_model_last = -1
 marker_placed = false
 response_timestamp = 0
 ser_active = "?"
+ser_active_p = "?"
 ser_count = "?"
 delay_start = os.time()
 color = 0x7ef3fa
@@ -480,6 +481,7 @@ function transponder()
                         if info.result == "ok" then
                             response_timestamp = info.timestamp
                             ser_active = info.active
+														ser_active_p = info.active_p
                             ser_count = info.count
                             if info.response ~= nil then
                                 if info.response == "no cars" then
@@ -1433,12 +1435,13 @@ function fastmap()
                 renderFontDrawText(
                     font10,
                     string.format(
-                        "UPD: %s || Текущая цель: %s   Найдено: %s   Активных источников: %s   Машин в базе: %s",
-                        count_next(),
+                        "Текущая цель: %s   Найдено: %s   Активных угонщиков источников: %s   Активных пассивных источников: %s   Машин в базе: %s || UPD: %s",
                         carsids[request_model],
                         #vhinfo,
                         ser_active,
-                        ser_count
+												ser_active_p,
+                        ser_count,
+												count_next()
                     ),
                     bX,
                     bY + size - size / 45,
