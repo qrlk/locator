@@ -20,7 +20,7 @@ A client-server **[moonloader](https://gtaforums.com/topic/890987-moonloader/)**
 
 Many RP servers contain a grind mission of a car thief, the goal of which is to find a car of a certain model, break the lock and transport it to a given location. It is suggested to search for a car in a given square, but since the car belongs to a real player, it is often not in this square when the hijacker drives up.  
 
-The idea of locator is for car thieves to constantly share information about cars in the drawing area and, when necessary, provide information about the location of the target cars on the map.
+The idea of **locator** is for car thieves to constantly share information about cars in the drawing area and, when necessary, provide information about the location of the target cars on the map.
 
 More info **[here](https://www.blast.hk/threads/57580/)** (in Russian).
 
