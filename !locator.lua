@@ -1,3 +1,5 @@
+require 'lib.moonloader'
+
 script_name("locator")
 script_author("qrlk")
 script_version("10.07.2020")
