@@ -2,6 +2,7 @@ script_name("locator")
 script_author("qrlk")
 script_version("10.07.2020")
 script_description("Локатор машин для угонщиков")
+script_url("https://github.com/qrlk/locator")
 
 local inicfg = require "inicfg"
 local dlstatus = require("moonloader").download_status
