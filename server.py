@@ -15,6 +15,7 @@ data = {}
 last_clear = time.time()
 
 app = Sanic()
+app.config.REQUEST_MAX_HEADER_SIZE = 16384
 @app.exception(NotFound)
 async def handle(request, exception):
     timer = time.time()
