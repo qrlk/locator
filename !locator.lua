@@ -76,7 +76,7 @@ function main()
     sampAddChatMessage(
       "{348cb2}locator v" ..
       thisScript().version ..
-      " активирован! {7ef3fa}/locator - menu {348cb2}~~{7ef3fa} /locatedonate - задонатить на сервер. {348cb2}Автор: qrlk.me",
+      " активирован! {7ef3fa}/locator - menu {348cb2}~~{7ef3fa} /locate [vehicle]. L-Alt+M. {348cb2}Автор: qrlk.me",
       0x7ef3fa
     )
     if no_sampev then
@@ -842,18 +842,6 @@ function updateMenu()
       title = " "
     },
     {
-      title = "{AAAAAA}Донат"
-    },
-    {
-      title = "Донат на сервер",
-      onclick = function()
-        os.execute('explorer "http://qrlk.me/donatelocator"')
-      end
-    },
-    {
-      title = " "
-    },
-    {
       title = "{AAAAAA}Ссылки"
     },
     {
@@ -862,18 +850,6 @@ function updateMenu()
         os.execute('explorer "http://github.com/qrlk/locator"')
       end
     },
-    {
-      title = "Сайт автора",
-      onclick = function()
-        os.execute('explorer "http://qrlk.me/"')
-      end
-    },
-    {
-      title = "Подписывайтесь на группу ВКонтакте!",
-      onclick = function()
-        os.execute('explorer "http://qrlk.me/sampvk"')
-      end
-    }
   }
 end
 --------------------------------------------------------------------------------
