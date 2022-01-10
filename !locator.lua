@@ -431,11 +431,11 @@ function transponder()
                   {
                     id = _id,
                     pos = {
-                      x = _x,
-                      y = _y,
-                      z = _z
+                      x = math.floor(_x),
+                      y = math.floor(_y),
+                      z = math.floor(_z)
                     },
-                    heading = getCarHeading(v),
+                    heading = math.floor(getCarHeading(v)),
                     health = getCarHealth(v),
                     model = getCarModel(v),
                     occupied = doesCharExist(getDriverOfCar(v)),
