@@ -2,7 +2,7 @@ require 'lib.moonloader'
 
 script_name("locator")
 script_author("qrlk")
-script_version("10.07.2020")
+script_version("10.01.2022")
 script_description("Локатор машин для угонщиков")
 script_url("https://github.com/qrlk/locator")
 
