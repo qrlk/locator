@@ -1,12 +1,10 @@
-FROM python:3.9.10-alpine
+FROM python:3.9.10-slim-buster
 
-RUN addgroup sanic && adduser -S -G sanic sanic
+RUN adduser sanic -system -group
 
 COPY requirements.txt .
 
-RUN apk add --update --no-cache build-base \
-&& pip3 install -r requirements.txt \
-&& apk del --no-cache build-base \
+RUN pip3 install -r requirements.txt \
 && rm requirements.txt
 
 WORKDIR /sanic
