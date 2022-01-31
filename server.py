@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from aiohttp import web
 from datetime import datetime
 import urllib.parse
 import time
