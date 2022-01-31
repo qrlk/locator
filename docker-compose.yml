@@ -2,7 +2,8 @@ version: "3.8"
 
 services:
   server:
-    image: .
+    build: .
+    image: ghcr.io/qrlk/locator:master
     ports:
       - 46547:46547
     restart: unless-stopped
