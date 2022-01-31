@@ -14,8 +14,14 @@ from sanic.exceptions import NotFound
 data = {}
 last_clear = time.time()
 
-app = Sanic()
+
+app = Sanic(name='locator')
 app.config.REQUEST_MAX_HEADER_SIZE = 16384
+
+@app.route('/oaksdokqwodkqwopdkqwopk')
+async def test(request):
+    return text("tt")
+
 @app.exception(NotFound)
 async def handle(request, exception):
     timer = time.time()
